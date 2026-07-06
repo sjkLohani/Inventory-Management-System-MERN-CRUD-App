@@ -1,0 +1,43 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: inventory_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mern_network
+
+  backend:
+    build: ./Backend
+    container_name: inventory_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/inventory
+      - PORT=5000
+    depends_on:
+      - mongo
+    networks:
+      - mern_network
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./Frontend/inventory_management_system
+      dockerfile: Dockerfile
+    container_name: inventory_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - mern_network
+
+volumes:
+  mongo_data:
+
+networks:
+  mern_network:
+    driver: bridge
