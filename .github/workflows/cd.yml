@@ -29,6 +29,8 @@ jobs:
         continue-on-error: true
 
       - name: Deploy Updated Containers
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: docker compose -f docker-compose.prod.yml up -d
 
       - name: Verify Containers Running
