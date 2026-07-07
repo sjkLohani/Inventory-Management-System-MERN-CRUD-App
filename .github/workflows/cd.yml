@@ -1,18 +1,12 @@
 name: CD — Deploy on Self-Hosted Runner
 
 on:
-  workflow_run:
-    workflows: ["CI — Build and Push Images"]
-    types:
-      - completed
+  push:
     branches: [ main ]
 
 jobs:
   deploy:
     runs-on: self-hosted
-
-    # Sirf tab deploy karo jab CI successful ho
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Checkout code
@@ -31,15 +25,11 @@ jobs:
           docker pull mongo:latest
 
       - name: Stop Old Containers
-        run: |
-          docker compose down
+        run: docker compose down
         continue-on-error: true
 
-      - name: Update docker-compose to use Hub images
-        run: |
-          docker compose -f docker-compose.prod.yml up -d
+      - name: Deploy Updated Containers
+        run: docker compose -f docker-compose.prod.yml up -d
 
       - name: Verify Containers Running
-        run: |
-          docker ps
-          echo "Deployment complete!"
+        run: docker ps
