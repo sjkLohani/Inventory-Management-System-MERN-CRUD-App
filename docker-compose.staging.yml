@@ -1,0 +1,43 @@
+services:
+  mongo-staging:
+    image: mongo:latest
+    container_name: inventory_mongodb_staging
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data_staging:/data/db
+    networks:
+      - mern_network_staging
+    restart: always
+
+  backend-staging:
+    image: ${DOCKER_USERNAME}/ims-backend:latest
+    container_name: inventory_backend_staging
+    ports:
+      - "5001:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo-staging:27017/inventory
+      - PORT=5000
+    depends_on:
+      - mongo-staging
+    networks:
+      - mern_network_staging
+    restart: on-failure
+
+  frontend-staging:
+    image: ${DOCKER_USERNAME}/ims-frontend:latest
+    container_name: inventory_frontend_staging
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend-staging
+    networks:
+      - mern_network_staging
+    restart: on-failure
+
+volumes:
+  mongo_data_staging:
+
+networks:
+  mern_network_staging:
+    driver: bridge
