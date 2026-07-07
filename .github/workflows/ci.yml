@@ -3,8 +3,6 @@ name: CI — Build and Push Images
 on:
   push:
     branches: [ dev ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-and-push:
