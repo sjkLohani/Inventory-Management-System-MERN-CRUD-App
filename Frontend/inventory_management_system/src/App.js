@@ -19,7 +19,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar title="IMS" about="About"></Navbar>
+        <Navbar title="UMS" about="About"></Navbar>
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
