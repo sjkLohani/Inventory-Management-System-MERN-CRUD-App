@@ -1,12 +1,67 @@
-name: CI — Build and Push Images
+name: CI — Lint, Test, Build and Push
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ dev, staging, main ]
+  workflow_dispatch:
 
 jobs:
-  build-and-push:
+  # ─────────────────────────────
+  # JOB 1 — Lint
+  # ─────────────────────────────
+  lint:
+    name: Lint Backend
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: Backend/package-lock.json
+
+      - name: Install dependencies
+        run: cd Backend && npm install
+
+      - name: Run ESLint
+        run: cd Backend && npm run lint
+
+  # ─────────────────────────────
+  # JOB 2 — Test (needs lint)
+  # ─────────────────────────────
+  test:
+    name: Test Backend API
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: Backend/package-lock.json
+
+      - name: Install dependencies
+        run: cd Backend && npm install
+
+      - name: Run API Tests
+        run: cd Backend && npm test
+
+  # ─────────────────────────────
+  # JOB 3 — Build + Push (needs test)
+  # ─────────────────────────────
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout code

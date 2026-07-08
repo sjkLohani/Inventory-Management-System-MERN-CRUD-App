@@ -1,11 +1,13 @@
-name: CD — Deploy on Self-Hosted Runner
+name: CD — Deploy Staging (port 3001)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ staging ]
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-staging:
+    name: Deploy to Staging
     runs-on: self-hosted
 
     steps:
@@ -24,14 +26,14 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/ims-frontend:latest
           docker pull mongo:latest
 
-      - name: Stop Old Containers
-        run: docker compose down
+      - name: Stop Old Staging Containers
+        run: docker compose -f docker-compose.staging.yml down
         continue-on-error: true
 
-      - name: Deploy Updated Containers
+      - name: Deploy Staging Containers
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: docker compose -f docker-compose.prod.yml up -d
+        run: docker compose -f docker-compose.staging.yml up -d
 
-      - name: Verify Containers Running
+      - name: Verify
         run: docker ps

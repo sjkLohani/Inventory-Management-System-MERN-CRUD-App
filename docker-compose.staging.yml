@@ -16,7 +16,7 @@ services:
     ports:
       - "5001:5000"
     environment:
-      - MONGO_URI=mongodb://mongo-staging:27017/inventory
+      - MONGO_URI=mongodb://mongo-staging:27017/inventory_staging
       - PORT=5000
     depends_on:
       - mongo-staging
