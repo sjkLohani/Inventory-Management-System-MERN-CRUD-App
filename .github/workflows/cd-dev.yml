@@ -1,7 +1,10 @@
 name: CD — Deploy Dev (port 3002)
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI — Lint, Test, Build and Push"]
+    types:
+      - completed
     branches: [ dev ]
   workflow_dispatch:
 
@@ -9,6 +12,7 @@ jobs:
   deploy-dev:
     name: Deploy to Dev
     runs-on: self-hosted
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout code
