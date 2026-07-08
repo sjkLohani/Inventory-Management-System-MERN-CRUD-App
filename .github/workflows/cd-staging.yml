@@ -1,7 +1,10 @@
 name: CD — Deploy Staging (port 3001)
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI — Lint, Test, Build and Push"]
+    types:
+      - completed
     branches: [ staging ]
   workflow_dispatch:
 
@@ -9,6 +12,7 @@ jobs:
   deploy-staging:
     name: Deploy to Staging
     runs-on: self-hosted
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout code
