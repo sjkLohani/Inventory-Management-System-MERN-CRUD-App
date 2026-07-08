@@ -11,7 +11,7 @@ services:
     restart: always
 
   backend-dev:
-    image: ${DOCKER_USERNAME}/ims-backend:latest
+    image: ${DOCKER_USERNAME}/ims-backend:dev
     container_name: inventory_backend_dev
     ports:
       - "5002:5000"
@@ -25,7 +25,12 @@ services:
     restart: on-failure
 
   frontend-dev:
-    image: ${DOCKER_USERNAME}/ims-frontend:latest
+    image: ${DOCKER_USERNAME}/ims-frontend:dev
+    build:
+      context: ./Frontend/inventory_management_system
+      dockerfile: Dockerfile
+      args:
+        BACKEND_HOST: backend-dev
     container_name: inventory_frontend_dev
     ports:
       - "3002:80"

@@ -22,8 +22,8 @@ jobs:
 
       - name: Pull Latest Images
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/ims-backend:latest
-          docker pull ${{ secrets.DOCKER_USERNAME }}/ims-frontend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/ims-backend:dev
+          docker pull ${{ secrets.DOCKER_USERNAME }}/ims-frontend:dev
           docker pull mongo:latest
 
       - name: Stop Old Dev Containers
