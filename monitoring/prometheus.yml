@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  # Scrape prod backend (port 5000)
+  - job_name: 'ims-backend-prod'
+    static_configs:
+      - targets: ['172.17.0.1:5000']
+        labels:
+          env: 'prod'
+
+  # Scrape staging backend (port 5001)
+  - job_name: 'ims-backend-staging'
+    static_configs:
+      - targets: ['172.17.0.1:5001']
+        labels:
+          env: 'staging'
+
+  # Scrape dev backend (port 5002)
+  - job_name: 'ims-backend-dev'
+    static_configs:
+      - targets: ['172.17.0.1:5002']
+        labels:
+          env: 'dev'
